@@ -23,6 +23,7 @@ template<typename Item>
 struct fit_result
 {
     value_t total_value;
+	weight_t total_weight;
     std::vector<Item> items;
 };
 
@@ -37,12 +38,12 @@ static fit_result<BeginIter> fit_items_in_weight(BeginIter begin, EndIter end, i
 
 	// No items fit in remaining weight.
     if (begin == end) {
-        return {0, {}};
+        return {0, 0, {}};
     }
 
 	// If this is the last item in the list, just return as we know it fits.
     if (std::next(begin) == end) {
-	    return {begin->value, {begin}};
+	    return {begin->value, begin->weight, {begin}};
     }
 
 	// Recursively find best fit for remaining weight
@@ -61,6 +62,7 @@ static fit_result<BeginIter> fit_items_in_weight(BeginIter begin, EndIter end, i
 
 	// Add the heaviest to the rest and return it!
 	rest.total_value = total_including_heaviest;
+	rest.total_weight = rest.total_weight + begin->weight;
 	rest.items.push_back(begin);
 
 	return std::move(rest);
@@ -82,7 +84,6 @@ std::vector<item> steal(std::vector<item> items) {
 		[](const auto iter) { return *iter; });
 
 	return stolen_items;
-
 }
 
 }
