@@ -19,15 +19,16 @@ struct item
     value_t value;
 };
 
+template<typename Item>
 struct fit_result
 {
     value_t total_value;
-    std::vector<item> items;
+    std::vector<Item> items;
 };
 
 // Precondition: items are ordered by weight, heaviest first
 template<typename BeginIter, typename EndIter>
-static fit_result fit_items_in_weight(BeginIter begin, EndIter end, int weight) {
+static fit_result<BeginIter> fit_items_in_weight(BeginIter begin, EndIter end, int weight) {
 
 	// Drop any that won't fit in remaining weight
 	while (begin != end && begin->weight > weight) {
@@ -41,7 +42,7 @@ static fit_result fit_items_in_weight(BeginIter begin, EndIter end, int weight) 
 
 	// If this is the last item in the list, just return as we know it fits.
     if (std::next(begin) == end) {
-	    return {begin->value, {*begin}};
+	    return {begin->value, {begin}};
     }
 
 	// Recursively find best fit for remaining weight
@@ -60,18 +61,28 @@ static fit_result fit_items_in_weight(BeginIter begin, EndIter end, int weight) 
 
 	// Add the heaviest to the rest and return it!
 	rest.total_value = total_including_heaviest;
-	rest.items.push_back(*begin);
+	rest.items.push_back(begin);
 
 	return std::move(rest);
 }
 
 std::vector<item> steal(std::vector<item> items) {
+	std::vector<item> stolen_items;
+
     // Sort by heaviest first
     std::sort(std::begin(items), std::end(items), [](const item &lhs, const item &rhs) {
         return lhs.weight > rhs.weight;
     });
 
-    return fit_items_in_weight(std::begin(items), std::end(items), 50).items;
+	const auto haul = fit_items_in_weight(std::begin(items), std::end(items), 50);
+
+	std::transform(
+		std::begin(haul.items), std::end(haul.items),
+		std::back_inserter(stolen_items),
+		[](const auto iter) { return *iter; });
+
+	return stolen_items;
+
 }
 
 }
