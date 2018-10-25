@@ -14,17 +14,17 @@ using value_t = int;
 
 struct item
 {
-    id_t id;
-    weight_t weight;
-    value_t value;
+	id_t id;
+	weight_t weight;
+	value_t value;
 };
 
 template<typename Item>
 struct fit_result
 {
-    value_t total_value;
+	value_t total_value;
 	weight_t total_weight;
-    std::vector<Item> items;
+	std::vector<Item> items;
 };
 
 // Precondition: items are ordered by weight, heaviest first
@@ -37,28 +37,28 @@ static fit_result<BeginIter> fit_items_in_weight(BeginIter begin, EndIter end, i
 	}
 
 	// No items fit in remaining weight.
-    if (begin == end) {
-        return {0, 0, {}};
-    }
+	if (begin == end) {
+		return {0, 0, {}};
+	}
 
 	// If this is the last item in the list, just return as we know it fits.
-    if (std::next(begin) == end) {
-	    return {begin->value, begin->weight, {begin}};
-    }
+	if (std::next(begin) == end) {
+		return {begin->value, begin->weight, {begin}};
+	}
 
 	// Recursively find best fit for remaining weight
-    auto rest = fit_items_in_weight(std::next(begin), end, weight - begin->weight);
+	auto rest = fit_items_in_weight(std::next(begin), end, weight - begin->weight);
 
 	// Recursively find best result if we ignore the current heaviest item
-    auto exluding_heaviest = fit_items_in_weight(std::next(begin), end, weight);
+	auto exluding_heaviest = fit_items_in_weight(std::next(begin), end, weight);
 
-    const value_t total_including_heaviest = begin->value + rest.total_value;
+	const value_t total_including_heaviest = begin->value + rest.total_value;
 
 	// Favour returning excluding heaviest so we don't have to do any copies
 	// Also smaller/lighter items are easier to sell secretly!
-    if (exluding_heaviest.total_value >= total_including_heaviest) {
-        return std::move(exluding_heaviest);
-    }
+	if (exluding_heaviest.total_value >= total_including_heaviest) {
+		return std::move(exluding_heaviest);
+	}
 
 	// Add the heaviest to the rest and return it!
 	rest.total_value = total_including_heaviest;
@@ -71,10 +71,10 @@ static fit_result<BeginIter> fit_items_in_weight(BeginIter begin, EndIter end, i
 std::vector<item> steal(std::vector<item> items) {
 	std::vector<item> stolen_items;
 
-    // Sort by heaviest first
-    std::sort(std::begin(items), std::end(items), [](const item &lhs, const item &rhs) {
-        return lhs.weight > rhs.weight;
-    });
+	// Sort by heaviest first
+	std::sort(std::begin(items), std::end(items), [](const item &lhs, const item &rhs) {
+		return lhs.weight > rhs.weight;
+		});
 
 	const auto haul = fit_items_in_weight(std::begin(items), std::end(items), 50);
 
@@ -97,9 +97,9 @@ void run(const std::vector<item> &items) {
 
 	std::cout << "Sifted through "
 	          << items.size()
-			  << " items in "
-			  << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-			  << "us\n";
+		      << " items in "
+		      << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+		      << "us\n";
 
 	std::sort(std::begin(stolen_items), std::end(stolen_items),
 		[](const auto &lhs, const auto &rhs) { return lhs.id < rhs.id; });
@@ -107,7 +107,7 @@ void run(const std::vector<item> &items) {
 	for (const auto &item : stolen_items) {
 		std::cout << "id: " << item.id << ", weight: " << item.weight << ", value: " << item.value << "\n";
 	}
-	
+
 	std::cout << std::flush;
 }
 
