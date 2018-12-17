@@ -1,0 +1,11 @@
+weight: 90, total value: 358
+Sifted through 200 items in 237us
+id: 12, weight: 11, value: 44
+id: 15, weight: 10, value: 44
+id: 16, weight: 10, value: 47
+id: 17, weight: 11, value: 48
+id: 23, weight: 13, value: 47
+id: 31, weight: 11, value: 40
+id: 37, weight: 13, value: 48
+id: 43, weight: 11, value: 40
+Total: 282us

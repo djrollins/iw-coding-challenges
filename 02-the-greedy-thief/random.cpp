@@ -7,7 +7,7 @@ int main()
 	std::mt19937 gen{device()};
 	std::uniform_int_distribution<> dis{10, 50};
 
-	for (int i = 0; i < 3000; ++i) {
-		std::cout << " " << dis(gen);
+	for (int i = 0; i < 1000; ++i) {
+		std::cout << i << " " << dis(gen) << " " << dis(gen) << " ";
 	}
 }
