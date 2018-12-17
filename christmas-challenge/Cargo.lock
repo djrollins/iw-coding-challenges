@@ -1,0 +1,23 @@
+[[package]]
+name = "christmas-challenge"
+version = "0.1.0"
+dependencies = [
+ "plotlib 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "plotlib"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "svg 0.5.11 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "svg"
+version = "0.5.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum plotlib 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "99fada4df412db513e2d3dc3476367d32ae733d0c9d54649f148f815fe082ba2"
+"checksum svg 0.5.11 (registry+https://github.com/rust-lang/crates.io-index)" = "7518a18ac78da03c41ca0611128c6d8adf1efae0773c337d6c19793dce860c9b"
