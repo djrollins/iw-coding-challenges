@@ -7,11 +7,6 @@ use std::io::{self, Read};
 use std::ops::Deref;
 use std::str::FromStr;
 
-//use plotlib::page::Page;
-//use plotlib::scatter::{self, Scatter};
-//use plotlib::style::{Marker, Point};
-//use plotlib::view::View;
-
 use rayon::prelude::*;
 
 type Id = u32;
@@ -192,40 +187,11 @@ fn chunk(coords: Vec<Record>) -> Vec<Vec<Record>> {
 fn main() -> Result<(), Box<Error>> {
     let input = read_input()?;
 
-    let data: Vec<_> = chunk(input)
+    chunk(input)
         .par_iter()
         .rev()
         .flat_map(|chunk| solve_by_nearest(chunk))
-        .collect();
-
-    //    let colours = ["red", "blue", "green"];
-    //    let mut colours_iter = colours.iter().cycle();
-
-    //    let view = View::new();
-
-    //    let data: Vec<_> = chunk(input)
-    //        .into_iter()
-    //        .map(|chunk| {
-    //            let coords: Vec<_> = chunk
-    //                .iter()
-    //                .map(|record| (*record.lat, *record.lon))
-    //                .collect();
-    //            Scatter::from_vec(&coords[..]).style(
-    //                scatter::Style::new()
-    //                    .colour(colours_iter.next().unwrap().clone())
-    //                    .marker(Marker::Square)
-    //                    .size(0.5f32),
-    //            )
-    //        })
-    //        .collect();
-
-    //    let view = data.iter().fold(view, |view, data| view.add(data));
-
-    //    Page::single(&view).save("out2.svg");
-
-    for id in data {
-        println!("{}", id);
-    }
+        .for_each(|id| println!("{}", id));
 
     Ok(())
 }
