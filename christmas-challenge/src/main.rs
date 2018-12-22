@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::f64::{INFINITY, MIN, NEG_INFINITY};
 use std::hash::{Hash, Hasher};
@@ -11,23 +11,20 @@ use rayon::prelude::*;
 
 type Id = u32;
 
-#[derive(Debug, Clone)]
+// NotNan wrappers are to so I can create Eq and Ord implementations so that
+// Records can be put in associative containers. floating point numbers aren't
+// are only PartialOrd and PartialEq by default because NaN != NaN
+#[derive(Debug, Clone, PartialEq)]
 struct Record {
     id: Id,
     lat: NotNan,
     lon: NotNan,
 }
 
-// Just hash the id!
+// Just hash the id
 impl Hash for Record {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.id.hash(state)
-    }
-}
-
-impl PartialEq for Record {
-    fn eq(&self, other: &Record) -> bool {
-        self.id == other.id
     }
 }
 
@@ -146,7 +143,7 @@ fn solve_by_nearest(records: &[Record]) -> Vec<Id> {
     }
 }
 
-const GRID_SIZE: usize = 5;
+const GRID_SIZE: usize = 4;
 
 fn chunk(coords: Vec<Record>) -> Vec<Vec<Record>> {
     let min_max = (
@@ -187,9 +184,11 @@ fn chunk(coords: Vec<Record>) -> Vec<Vec<Record>> {
 fn main() -> Result<(), Box<Error>> {
     let input = read_input()?;
 
-    chunk(input)
+    // running each chunk in parallel means that the results will be flat_mapped
+    // in an unspecified order. More intelligently connecting chunks could be
+    // decent optimisation.
+    chunk(input.clone())
         .par_iter()
-        .rev()
         .flat_map(|chunk| solve_by_nearest(chunk))
         .for_each(|id| println!("{}", id));
 

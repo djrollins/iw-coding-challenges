@@ -4,6 +4,16 @@ version = "0.1.0"
 authors = ["Daniel J. Rollins <daniel.rollins@infinityworks.com>"]
 edition = "2018"
 
+[[bin]]
+name = "solve"
+path = "src/main.rs"
+
+[[bin]]
+name = "graph"
+path = "src/graph.rs"
+
 [dependencies]
-plotlib = "x"
 rayon = "x"
+
+[dependencies.plotlib]
+git = "https://github.com/milliams/plotlib"
